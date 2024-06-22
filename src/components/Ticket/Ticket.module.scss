@@ -1,0 +1,93 @@
+.ticket {
+    width: 93%;
+    height: auto;
+    cursor: pointer;
+    display: grid;
+    border-radius: 5px;
+    background-color: #ffffff;
+    grid-template-areas:
+        'price cost logo'
+        'airport time transfer';
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    margin-bottom: 1.5rem;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 20px 15px;
+
+    .ticket__price {
+        grid-area: price;
+        font-size: 28px;
+        font-weight: 500;
+        line-height: 24px;
+        text-align: left;
+        color: #2196f3;
+        text-transform: uppercase;
+        padding-top: 7px;
+        letter-spacing: 1px;
+    }
+
+    .ticket__logo {
+        grid-area: logo;
+        margin-left: auto;
+        padding-top: 0;
+    }
+
+    .ticket__airport {
+        grid-area: airport;
+        padding: 15px 0 0 0;
+    }
+
+    .ticket__time {
+        grid-area: time;
+        padding: 15px 0 0;
+    }
+
+    .ticket__transfer {
+        grid-area: transfer;
+        padding: 15px 0 0;
+    }
+}
+
+ul {
+    list-style-type: none;
+}
+
+li {
+    text-align: left;
+}
+span {
+    font-size: 13px;
+    line-height: 25px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: left;
+}
+span:nth-child(1) {
+    color: #a0b0b9;
+}
+
+span:nth-child(3) {
+    color: #4a4a4a;
+}
+
+@media (min-width: 400px) {
+    .ticket__price {
+        padding-left: 20px;
+        padding-top: 10px;
+    }
+    .ticket__logo {
+        padding-top: 10px;
+        padding-right: 20px;
+    }
+    span {
+        font-size: 14px;
+        line-height: 25px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        text-align: left;
+    }
+    .ticket__airport {
+        grid-area: airport;
+        padding: 15px 0 0 20px !important;
+    }
+}
