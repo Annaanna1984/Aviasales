@@ -2,7 +2,7 @@ import React from 'react';
 import style from './App.module.scss';
 import FilterList from '../FilterList';
 import TicketList from '../TicketList';
-import logo from '../../icon/Logo.png';
+import logo from '../../assets/Logo.png';
 import Pagination from '../Pagination';
 import TabList from '../TabList/TabList';
 

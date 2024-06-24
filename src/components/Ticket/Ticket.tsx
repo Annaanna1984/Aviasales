@@ -1,35 +1,19 @@
 import React from 'react';
 import style from './Ticket.module.scss';
 import { Ticket } from '../../Reducer/ticketReducer';
+import { formatDate, formatDuration } from '../../utils/formatUtils';
 
 const TicketComponent = (ticket: Ticket) => {
     const { price, carrier, segments } = ticket;
-    const [segment0, segment1] = segments;
+    const [segmentFrom, segmentTo] = segments;
 
-    const formatDuration = (duration: number) => {
-        const hours = padTime(Math.floor(duration / 60));
-        const minutes = padTime(duration % 60);
-        return `${hours}ч ${minutes}м`;
-    };
+    const dateFrom = segmentFrom.date;
+    const durationFrom = segmentFrom.duration;
+    const { origin: originFrom, destination: destinationFrom, stops: stopsFrom } = segmentFrom;
 
-    const formatDate = (date: Date, duration: number) => {
-        const newDate = new Date(date);
-        const endDate = new Date(newDate.getTime() + duration * 60000);
-        return `${padTime(newDate.getHours())}:${padTime(newDate.getMinutes())} -
-            ${padTime(endDate.getHours())}:${padTime(endDate.getMinutes())}`;
-    };
-
-    const padTime = (num: number): string => {
-        return num.toString().padStart(2, '0');
-    };
-
-    const date0 = segment0.date;
-    const duration0 = segment0.duration;
-    const { origin: origin0, destination: destination0, stops: stops0 } = segment0;
-
-    const date1 = segment1.date;
-    const duration1 = segment1.duration;
-    const { origin: origin1, destination: destination1, stops: stops1 } = segment1;
+    const dateTo = segmentTo.date;
+    const durationTo = segmentTo.duration;
+    const { origin: originTo, destination: destinationTo, stops: stopsTo } = segmentTo;
 
     function getStopsEnding(stops: number) {
         if (stops === 0) {
@@ -48,45 +32,45 @@ const TicketComponent = (ticket: Ticket) => {
             <ul className={`${style['ticket__airport']}`}>
                 <li>
                     <span>
-                        {origin0} - {destination0}
+                        {originFrom} - {destinationFrom}
                     </span>
                     <br />
-                    <span>{formatDate(date0, duration0)}</span>
+                    <span>{formatDate(dateFrom, durationFrom)}</span>
                 </li>
                 <li>
                     <span>
-                        {origin1} - {destination1}
+                        {originTo} - {destinationTo}
                     </span>
                     <br />
-                    <span>{formatDate(date1, duration1)}</span>
+                    <span>{formatDate(dateTo, durationTo)}</span>
                 </li>
             </ul>
             <ul className={style.ticket__time}>
                 <li>
                     <span>в пути</span>
                     <br />
-                    <span>{formatDuration(duration0)}</span>
+                    <span>{formatDuration(durationFrom)}</span>
                 </li>
                 <li>
                     <span>в пути</span>
                     <br />
-                    <span>{formatDuration(duration1)}</span>
+                    <span>{formatDuration(durationTo)}</span>
                 </li>
             </ul>
             <ul className={style.ticket__transfer}>
                 <li>
                     <span>
-                        {stops0.length} {getStopsEnding(stops0.length)}
+                        {stopsFrom.length} {getStopsEnding(stopsFrom.length)}
                     </span>
                     <br />
-                    <span>{stops0.length > 0 ? stops0.join(', ') : '-'}</span>
+                    <span>{stopsFrom.length > 0 ? stopsFrom.join(', ') : '-'}</span>
                 </li>
                 <li>
                     <span>
-                        {stops1.length} {getStopsEnding(stops1.length)}
+                        {stopsTo.length} {getStopsEnding(stopsTo.length)}
                     </span>
                     <br />
-                    <span>{stops1.length > 0 ? stops1.join(', ') : '-'}</span>
+                    <span>{stopsTo.length > 0 ? stopsTo.join(', ') : '-'}</span>
                 </li>
             </ul>
         </div>

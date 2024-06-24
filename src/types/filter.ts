@@ -1,6 +1,6 @@
 import { ActionType } from '../types';
 
-type Label = {
+export type Label = {
     labelTxt: string;
     id: number;
     checked: boolean;

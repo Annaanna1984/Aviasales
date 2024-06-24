@@ -1,6 +1,6 @@
 import { ActionType } from '../types';
 
-type Filter = {
+export type Filter = {
     label: string;
     id: number;
     checked: boolean;

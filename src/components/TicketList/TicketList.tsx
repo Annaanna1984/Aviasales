@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+/* eslint-disable */
+import React, { useEffect, useMemo } from 'react';
 import style from './TicketList.module.scss';
 import TicketComponent from '../Ticket';
 import { useTypedSelector } from '../../hooks/useTypedSelector';
@@ -7,6 +8,8 @@ import { fetchSearchId, fetchTickets, load } from '../../actions';
 import { Spin } from 'antd';
 import { ActionTickets, Ticket } from '../../Reducer/ticketReducer';
 import { Dispatch } from 'redux';
+import { filterTicketsByStops, sortTickets } from '../../utils/filterUtils';
+let hash = require('object-hash');
 
 const TicketList = () => {
     const dispatch: Dispatch<ActionTickets> = useDispatch();
@@ -17,45 +20,14 @@ const TicketList = () => {
     const error = useTypedSelector((state) => state.ticket.error);
 
     const filters = useTypedSelector((state) => state.filter.labels);
-    const activeFilters = filters.filter((filter) => filter.checked).map((e) => e.stopCount);
+    const activeFilters = filters.filter((filter) => filter.checked);
 
     const tab = useTypedSelector((state) => state.sort.filters);
-    const activeTab = tab.filter((tab) => tab.checked).find((tab) => tab.id);
+    const activeTabId = tab.filter((tab) => tab.checked).find((tab) => tab.id)?.id ?? 0;
 
-    const filterTickets = (ticket: Ticket, stopCounts: number[]) => {
-        const segStopsTo = ticket.segments[0].stops.length;
-        const segStopsFrom = ticket.segments[1].stops.length;
+    const filteredTickets = useMemo(() => filterTicketsByStops(allTickets, activeFilters), [allTickets, activeFilters]);
 
-        let segStopsToMatch;
-        let segStopsFromMatch;
-        stopCounts.forEach((e) => {
-            if (segStopsTo === e) {
-                segStopsToMatch = true;
-            }
-            if (segStopsFrom === e) {
-                segStopsFromMatch = true;
-            }
-        });
-
-        return segStopsToMatch && segStopsFromMatch;
-    };
-
-    let filteredTickets: Ticket[];
-    if (!allTickets) {
-        filteredTickets = [];
-    } else if (activeFilters.length === 5) {
-        filteredTickets = allTickets;
-    } else {
-        filteredTickets = allTickets.filter((e) => filterTickets(e, activeFilters));
-    }
-
-    if (activeTab && activeTab.id === 1) {
-        filteredTickets = filteredTickets.sort((a, b) => a.price - b.price);
-    } else if (activeTab && activeTab.id === 2) {
-        filteredTickets = filteredTickets.sort(
-            (a, b) => a.segments[0].duration + a.segments[1].duration - b.segments[0].duration - b.segments[1].duration
-        );
-    }
+    const sortedTickets = useMemo(() => sortTickets(filteredTickets, activeTabId), [filteredTickets, activeTabId]);
 
     useEffect(() => {
         if (currentSearchId) {
@@ -77,13 +49,13 @@ const TicketList = () => {
     return (
         <ul className={style.ticketList}>
             {loading && <Spin className={style.spin} size="large" />}
-            {!loading && filteredTickets.length === 0 ? (
+            {!loading && sortedTickets.length === 0 ? (
                 <div className={style.ticketList__notification}>
                     Рейсов, подходящих под заданные фильтры, не найдено
                 </div>
             ) : (
-                filteredTickets?.slice(0, ticketCount + 5).map((ticket: Ticket, index: number) => (
-                    <li key={index}>
+                sortedTickets?.slice(0, ticketCount + 5).map((ticket: Ticket) => (
+                    <li key={hash(ticket)}>
                         <TicketComponent {...ticket} />
                     </li>
                 ))

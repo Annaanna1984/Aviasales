@@ -27,7 +27,7 @@ const Filter = ({ id }: FilterProps) => {
         <>
             {curFilter && (
                 <button onClick={handleFilterChange} className={style.filter__button}>
-                    <input type="checkbox" checked={curFilter.checked} id={`${id}`} />
+                    <input type="checkbox" checked={curFilter.checked} id={`${id}`} readOnly={true} />
                     <label className={style.filter__name} htmlFor="id">
                         {curFilter.labelTxt}
                     </label>
